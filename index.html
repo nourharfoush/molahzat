@@ -3,267 +3,614 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ملاحظات امتحانات العلوم الشرعية</title>
+<title>كشف القائمين على الامتحانات والملاحظات</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --paper:#f5f6f2; --card:#ffffff; --ink:#16302a; --muted:#6a7a74;
-  --line:#dde3de; --green:#1d5c4b; --green-d:#134035; --gold:#b58a2f;
-  --dirty:#fff7e0; --ok:#1d7a4f; --err:#b3372b;
+  --paper:#f4f5f1; --card:#fff; --ink:#16302a; --muted:#66766f; --line:#dbe2dd;
+  --green:#1d5c4b; --green-d:#134035; --green-l:#e5f0eb; --gold:#b58a2f; --gold-l:#fbf3dc;
+  --dirty:#fff8e1; --ok:#1d7a4f; --err:#b3372b; --err-l:#fbeae7;
 }
 *{box-sizing:border-box}
 html,body{margin:0}
-body{font-family:"IBM Plex Sans Arabic",Tahoma,sans-serif;background:var(--paper);color:var(--ink);
-  line-height:1.6;padding-bottom:110px}
-header{background:var(--green-d);color:#fff;padding:18px 16px 16px}
+body{font-family:"IBM Plex Sans Arabic",Tahoma,sans-serif;background:var(--paper);color:var(--ink);line-height:1.6;padding-bottom:96px}
+button,input,select,textarea{font:inherit;color:inherit}
+.wrap{max-width:820px;margin:0 auto;padding:0 14px}
+
+/* الهيدر والتبويبات */
+header{background:var(--green-d);color:#fff;padding:16px 0 0}
 header h1{margin:0;font-size:1.15rem;font-weight:700}
-header p{margin:2px 0 0;font-size:.85rem;color:#b9d2c9}
-.wrap{max-width:760px;margin:0 auto;padding:0 14px}
+header p{margin:2px 0 12px;font-size:.84rem;color:#b9d2c9}
+.tabs{display:flex;gap:4px}
+.tabs button,.tabs a{background:transparent;border:0;color:#b9d2c9;padding:9px 16px;cursor:pointer;font-weight:600;font-size:.92rem;
+  border-bottom:3px solid transparent;text-decoration:none;display:inline-block}
+.tabs .on{color:#fff;border-bottom-color:var(--gold)}
+.tabs a{margin-inline-start:auto}
+
+/* عناصر الإدخال */
+input[type=search],input[type=text],input[type=date],input[type=password],select,textarea{
+  border:1px solid var(--line);background:#fff;border-radius:10px;padding:9px 12px;width:100%}
+input:focus,select:focus,textarea:focus,button:focus-visible{outline:2px solid var(--green);outline-offset:1px}
+.btn{border:1px solid var(--green);background:#fff;color:var(--green);border-radius:10px;padding:9px 14px;font-weight:600;cursor:pointer;white-space:nowrap}
+.btn:hover{background:var(--green-l)}
+.btn.pri{background:var(--green);color:#fff}
+.btn.pri:hover{background:var(--green-d)}
+.btn:disabled{opacity:.5;cursor:default}
+
+/* شريط الأدوات */
 .bar{position:sticky;top:0;z-index:5;background:var(--paper);padding:12px 0 10px;border-bottom:1px solid var(--line)}
-.bar .row{display:flex;gap:8px}
-select,input[type=search],input[type=password],textarea{
-  font:inherit;color:inherit;border:1px solid var(--line);background:#fff;border-radius:10px;padding:10px 12px;width:100%}
-select{flex:1.3}
-input[type=search]{flex:1}
-select:focus,input:focus,textarea:focus{outline:2px solid var(--green);outline-offset:1px;border-color:var(--green)}
-.meta{display:flex;justify-content:space-between;font-size:.82rem;color:var(--muted);margin-top:8px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.row .grow{flex:1;min-width:150px}
+.meta{display:flex;justify-content:space-between;font-size:.82rem;color:var(--muted);margin-top:8px;gap:10px;flex-wrap:wrap}
+.meta a{color:var(--muted)}
+
+/* كروت الأعضاء */
 .list{display:flex;flex-direction:column;gap:10px;margin-top:14px}
-.m{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;transition:background .2s,border-color .2s}
+.m{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
 .m.dirty{background:var(--dirty);border-color:#e6cf86}
-.m.done{border-color:var(--ok)}
-.top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
-.nm{font-weight:600;font-size:1rem}
-.jb{font-size:.82rem;color:var(--muted)}
-.tag{flex:none;font-size:.78rem;font-weight:600;color:var(--green);background:#e5f0eb;border-radius:8px;padding:2px 10px;white-space:nowrap}
-textarea{margin-top:10px;min-height:64px;resize:vertical;font-size:.95rem}
+.mh{display:flex;align-items:center;gap:10px}
+.ord{display:flex;flex-direction:column;gap:2px}
+.ord button{border:1px solid var(--line);background:#fff;border-radius:6px;font-size:.6rem;line-height:1;padding:4px 7px;cursor:pointer;color:var(--muted)}
+.ord button:hover{border-color:var(--green);color:var(--green)}
+.who{flex:1;min-width:0}
+.nm{font-weight:600}
+.jb{font-size:.8rem;color:var(--muted)}
+.cm{width:112px;flex:none;text-align:center;font-weight:600;color:var(--green);padding:7px 8px}
+.x{flex:none;width:34px;height:34px;border:1px solid var(--line);background:#fff;border-radius:50%;cursor:pointer;font-size:1.1rem;line-height:1;color:var(--muted)}
+.x:hover{border-color:var(--err);color:var(--err);background:var(--err-l)}
+.m textarea{margin-top:10px;min-height:60px;resize:vertical}
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
-.chips button{font:inherit;font-size:.8rem;border:1px solid var(--line);background:#fff;color:var(--ink);
-  border-radius:999px;padding:3px 12px;cursor:pointer}
+.chips button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:2px 12px;font-size:.8rem;cursor:pointer}
 .chips button:hover{border-color:var(--green);color:var(--green)}
-.savebar{position:fixed;inset:auto 0 0 0;background:#fff;border-top:1px solid var(--line);padding:12px 14px;
-  padding-bottom:calc(12px + env(safe-area-inset-bottom,0px))}
-.savebar .in{max-width:760px;margin:0 auto;display:flex;align-items:center;gap:12px}
+
+/* حالات فارغة */
+.empty{background:var(--card);border:1px dashed #c3cec8;border-radius:14px;text-align:center;padding:34px 16px;margin-top:16px}
+.empty h3{margin:0 0 6px}
+.empty p{margin:0 0 16px;color:var(--muted)}
+.empty .row{justify-content:center}
+.msg{text-align:center;color:var(--muted);padding:40px 10px}
+
+/* شريط الحفظ */
+.savebar{position:fixed;inset:auto 0 0 0;background:#fff;border-top:1px solid var(--line);padding:12px 14px calc(12px + env(safe-area-inset-bottom,0px));z-index:6}
+.savebar .in{max-width:820px;margin:0 auto;display:flex;align-items:center;gap:12px}
 #status{flex:1;font-size:.9rem;color:var(--muted)}
-#status.ok{color:var(--ok)} #status.err{color:var(--err)}
-#save{font:inherit;font-weight:700;border:0;border-radius:10px;background:var(--green);color:#fff;
-  padding:12px 26px;cursor:pointer;min-width:150px}
-#save:disabled{background:#b9c7c1;cursor:default}
-#save:not(:disabled):hover{background:var(--green-d)}
-.empty,.msg{text-align:center;color:var(--muted);padding:40px 10px}
-.gate{position:fixed;inset:0;background:rgba(22,48,42,.55);display:none;align-items:center;justify-content:center;z-index:20;padding:20px}
-.gate.show{display:flex}
-.gate .box{background:#fff;border-radius:14px;padding:22px;max-width:340px;width:100%}
-.gate h2{margin:0 0 4px;font-size:1.05rem}
-.gate p{margin:0 0 12px;color:var(--muted);font-size:.88rem}
-.gate button{margin-top:12px;width:100%;font:inherit;font-weight:700;border:0;border-radius:10px;background:var(--green);color:#fff;padding:11px;cursor:pointer}
-.gate .e{color:var(--err);font-size:.85rem;margin-top:8px;min-height:1.2em}
-@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+#status.err{color:var(--err)}
+#save{padding:12px 26px;min-width:150px}
+
+/* النوافذ */
+.modal{position:fixed;inset:0;background:rgba(22,48,42,.55);display:none;align-items:flex-end;justify-content:center;z-index:30}
+.modal.show{display:flex}
+.sheet{background:#fff;width:100%;max-width:560px;max-height:88vh;border-radius:16px 16px 0 0;padding:16px;display:flex;flex-direction:column;gap:10px}
+@media(min-width:640px){.modal{align-items:center}.sheet{border-radius:16px}}
+.sheet h2{margin:0;font-size:1.05rem}
+.sh-h{display:flex;justify-content:space-between;align-items:center}
+.plist{overflow:auto;border:1px solid var(--line);border-radius:10px;min-height:120px;flex:1}
+.pi{display:flex;gap:10px;align-items:center;padding:9px 12px;border-bottom:1px solid var(--line);cursor:pointer}
+.pi:last-child{border-bottom:0}
+.pi input{width:18px;height:18px;flex:none;accent-color:var(--green)}
+.pi.off{opacity:.5;cursor:default}
+.pi small{color:var(--muted);display:block;font-size:.78rem}
+.pi em{font-style:normal;margin-inline-start:auto;font-size:.75rem;background:var(--green-l);color:var(--green);border-radius:8px;padding:1px 8px}
+.link{background:none;border:0;color:var(--green);text-decoration:underline;cursor:pointer;padding:0;font-size:.88rem;text-align:start}
+.field{display:flex;flex-direction:column;gap:4px}
+.field label{font-size:.85rem;font-weight:600}
+.field small{color:var(--muted);font-size:.78rem}
+.field small.bad{color:var(--err)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:520px){.grid2{grid-template-columns:1fr}}
+
+/* قائمة الأعضاء */
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin-top:14px}
+.card h3{margin:0 0 10px;font-size:1rem}
+.mrow{display:flex;justify-content:space-between;gap:10px;padding:9px 2px;border-bottom:1px solid var(--line)}
+.mrow:last-child{border-bottom:0}
+
+/* إشعارات */
+.toast{position:fixed;inset:auto 14px 92px 14px;max-width:420px;margin:0 auto;background:var(--ink);color:#fff;padding:11px 16px;border-radius:10px;z-index:50;display:none;font-size:.92rem}
+.toast.show{display:block}
+.toast.err{background:var(--err)}
+.toast.ok{background:var(--ok)}
+
+.gate .sheet{max-width:340px;border-radius:14px;align-self:center}
+.gate{align-items:center}
+.e{color:var(--err);font-size:.85rem;min-height:1.2em}
+[hidden]{display:none!important}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
 <body>
 
 <header>
   <div class="wrap">
-    <h1>ملاحظات امتحانات رواق العلوم الشرعية والعربية</h1>
+    <h1>كشف القائمين على امتحانات رواق العلوم الشرعية والعربية</h1>
     <p>الأزهر الشريف · فرع رواق البحيرة · نوفمبر 2026</p>
-    <p><a href="stats.html" style="color:#e9d9a8">عدد ملاحظات كل عضو</a></p>
+    <nav class="tabs">
+      <button class="on" data-tab="day">كشف اليوم</button>
+      <button data-tab="members">قائمة الأعضاء</button>
+      <a href="stats.html">إحصائية الملاحظات</a>
+    </nav>
   </div>
 </header>
 
-<main class="wrap">
+<!-- ===== تبويب كشف اليوم ===== -->
+<main class="wrap" id="tab-day">
   <div class="bar">
     <div class="row">
-      <select id="day" aria-label="اليوم"></select>
-      <input type="search" id="q" placeholder="ابحث بالاسم" aria-label="بحث">
+      <select id="day" class="grow" aria-label="اليوم"></select>
+      <button class="btn" id="newDay">+ يوم جديد</button>
     </div>
-    <div class="meta"><span id="count"></span><a href="#" id="logout" style="color:var(--muted)">تغيير كود الدخول</a></div>
+    <div class="row" id="tools" style="margin-top:8px" hidden>
+      <input type="search" id="q" class="grow" placeholder="ابحث بالاسم" aria-label="بحث">
+      <button class="btn pri" id="addMem">+ إضافة أعضاء</button>
+      <button class="btn" id="copyDay">نسخ من يوم</button>
+    </div>
+    <div class="meta"><span id="count"></span><a href="#" id="logout">تغيير كود الدخول</a></div>
   </div>
   <div id="list" class="list"><div class="msg">جاري التحميل…</div></div>
 </main>
 
-<div class="savebar">
+<!-- ===== تبويب قائمة الأعضاء ===== -->
+<main class="wrap" id="tab-members" hidden>
+  <div class="card">
+    <h3>إضافة عضو جديد إلى القائمة</h3>
+    <div class="field" style="margin-bottom:10px"><label for="fName">الاسم</label>
+      <input type="text" id="fName" autocomplete="off" placeholder="الاسم رباعي"></div>
+    <div class="grid2">
+      <div class="field"><label for="fNid">الرقم القومي</label>
+        <input type="text" id="fNid" inputmode="numeric" maxlength="14" autocomplete="off" placeholder="14 رقمًا">
+        <small id="nidHint">0 / 14</small></div>
+      <div class="field"><label for="fRec">رقم السجل</label>
+        <input type="text" id="fRec" inputmode="numeric" autocomplete="off"></div>
+    </div>
+    <div class="field" style="margin:10px 0"><label for="fJob">جهة العمل</label>
+      <input type="text" id="fJob" list="jobs" autocomplete="off" placeholder="مثال: إدارة الرواق"></div>
+    <button class="btn pri" id="addMember">حفظ العضو في القائمة</button>
+  </div>
+  <div class="card">
+    <div class="row" style="justify-content:space-between;margin-bottom:8px">
+      <h3 style="margin:0">أعضاء القائمة <span id="mCount" style="color:var(--muted);font-weight:400"></span></h3>
+    </div>
+    <input type="search" id="mq" placeholder="ابحث في القائمة">
+    <div id="mList" style="margin-top:6px"></div>
+  </div>
+</main>
+
+<div class="savebar" id="savebar">
   <div class="in">
     <div id="status"></div>
-    <button id="save" disabled>حفظ التعديلات</button>
+    <button class="btn pri" id="save" disabled>حفظ التعديلات</button>
   </div>
 </div>
 
-<div class="gate" id="gate">
-  <div class="box">
+<!-- نافذة إضافة أعضاء إلى الكشف -->
+<div class="modal" id="mPick" role="dialog" aria-modal="true" aria-labelledby="pT">
+  <div class="sheet">
+    <div class="sh-h"><h2 id="pT">إضافة أعضاء إلى الكشف</h2><button class="x" data-close aria-label="إغلاق">×</button></div>
+    <input type="search" id="pq" placeholder="ابحث في قائمة الأعضاء">
+    <div class="plist" id="plist"></div>
+    <input type="text" id="pickCm" list="cmt" placeholder="رقم اللجنة أو الصفة للمضافين (اختياري)">
+    <div class="row" style="justify-content:space-between">
+      <button class="link" id="toNew">العضو غير موجود؟ أضفه للقائمة أولًا</button>
+      <button class="btn pri" id="pickGo" disabled>إضافة</button>
+    </div>
+  </div>
+</div>
+
+<!-- نافذة النسخ من يوم -->
+<div class="modal" id="mCopy" role="dialog" aria-modal="true" aria-labelledby="cT">
+  <div class="sheet">
+    <div class="sh-h"><h2 id="cT">نسخ الكشف من يوم آخر</h2><button class="x" data-close aria-label="إغلاق">×</button></div>
+    <div class="field"><label for="copySrc">اليوم المصدر</label><select id="copySrc"></select>
+      <small>يُنسخ الأعضاء ورقم اللجنة فقط، بدون الملاحظات. من هو موجود في الكشف لا يتكرر.</small></div>
+    <button class="btn pri" id="copyGo">نسخ الأعضاء</button>
+  </div>
+</div>
+
+<!-- نافذة يوم جديد -->
+<div class="modal" id="mDay" role="dialog" aria-modal="true" aria-labelledby="dT">
+  <div class="sheet">
+    <div class="sh-h"><h2 id="dT">إضافة يوم جديد</h2><button class="x" data-close aria-label="إغلاق">×</button></div>
+    <div class="field"><label for="nd">تاريخ اليوم</label><input type="date" id="nd">
+      <small>يُنشأ في الملف كشف جديد بنفس تنسيق باقي الأيام.</small></div>
+    <button class="btn pri" id="dayGo">إنشاء اليوم</button>
+  </div>
+</div>
+
+<!-- كود الدخول -->
+<div class="modal gate" id="gate">
+  <div class="sheet">
     <h2>كود الدخول</h2>
-    <p>اكتب الكود الذي أعطاه لك المسؤول.</p>
     <input type="password" id="code" autocomplete="off">
     <div class="e" id="gerr"></div>
-    <button id="gok">دخول</button>
+    <button class="btn pri" id="gok">دخول</button>
   </div>
 </div>
 
+<datalist id="cmt"></datalist>
+<datalist id="jobs"></datalist>
+<div class="toast" id="toast" role="status"></div>
+
 <script>
-/* ===== الإعداد: ضع رابط Web App من Apps Script هنا ===== */
-const API_URL = 'https://script.google.com/macros/s/AKfycbxylJZGN5h5NWJOY9b7ejKsP6IkXYj0NtHUQNPEqNAKYPVThB26puwlQI3rYctpzogsDw/exec';
-/* ======================================================= */
+/* ===== ضع رابط Web App من Apps Script هنا ===== */
+const API_URL = 'https://script.google.com/macros/s/AKfycbyS0B3xiWrtHC_NIiaAbwh633j6dYW1QvrqlWYdIaCVpMseokOzpjx6CQwqSRq4X8CUIg/exec';
+/* ============================================== */
 
 const QUICK = ['حضر', 'غائب', 'متأخر', 'انصراف مبكر'];
+const COMMITTEES = ['1','2','3','4','5','6','7','8','9','10','مشرف دور','العمال'];
+
 const $ = id => document.getElementById(id);
-const state = { day: '', rows: [], edits: new Map() };   // edits: row -> note
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
 let code = localStorage.getItem('code') || '';
+let uid = 0;
+const S = { days: [], day: '', ready: false, rows: [], stamp: '', structChanged: false, master: null, pick: new Set(), saving: false };
 
-function setStatus(t, cls){ const s=$('status'); s.textContent=t||''; s.className=cls||''; }
-function updateSave(){
-  const n = state.edits.size;
-  $('save').disabled = n === 0;
-  $('save').textContent = n ? `حفظ التعديلات (${n})` : 'حفظ التعديلات';
-  if (n && !$('status').classList.contains('err')) setStatus(`${n} تعديل لم يُحفظ بعد`);
-  if (!n && !$('status').classList.contains('ok')) setStatus('');
-}
-
-async function get(params){
-  const u = new URL(API_URL);
-  Object.entries({ ...params, code }).forEach(([k,v]) => u.searchParams.set(k, v));
-  const r = await fetch(u);
+/* ---------- الشبكة ---------- */
+async function api(params, body){
+  let r;
+  if (body){
+    r = await fetch(API_URL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify({ ...body, code }) });
+  } else {
+    const u = new URL(API_URL);
+    Object.entries({ ...params, code }).forEach(([k,v]) => u.searchParams.set(k, v));
+    r = await fetch(u);
+  }
   const j = await r.json();
-  if (!j.ok) throw new Error(j.error);
+  if (!j.ok) throw new Error(j.error || 'حدث خطأ غير معروف');
   return j;
 }
-
-async function post(body){
-  const r = await fetch(API_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-    body: JSON.stringify({ ...body, code })
-  });
-  const j = await r.json();
-  if (!j.ok) throw new Error(j.error);
-  return j;
+async function guarded(fn){
+  for(;;){
+    try{ return await fn(); }
+    catch(e){
+      if (String(e.message).includes('كود الدخول')){ await askCode(e.message); continue; }
+      throw e;
+    }
+  }
 }
-
 function askCode(msg){
   return new Promise(res => {
     $('gerr').textContent = msg || '';
-    $('gate').classList.add('show');
-    $('code').value = ''; $('code').focus();
+    $('gate').classList.add('show'); $('code').value = ''; $('code').focus();
     const done = () => {
-      const v = $('code').value.trim();
-      if (!v) return;
+      const v = $('code').value.trim(); if (!v) return;
       code = v; localStorage.setItem('code', v);
-      $('gate').classList.remove('show');
-      $('gok').onclick = null; $('code').onkeydown = null;
-      res();
+      $('gate').classList.remove('show'); res();
     };
     $('gok').onclick = done;
     $('code').onkeydown = e => { if (e.key === 'Enter') done(); };
   });
 }
 
-function pickToday(days){
-  const d = new Date();
-  const norm = s => s.replace(/\s+/g,'').replace(/\b0(\d)/g,'$1');
-  const today = `${d.getDate()}-${d.getMonth()+1}-${d.getFullYear()}`;
-  return days.find(x => norm(x).includes(today)) || days[0];
+/* ---------- واجهة عامة ---------- */
+let toastT;
+function toast(msg, type){
+  const t = $('toast'); t.textContent = msg; t.className = 'toast show ' + (type || '');
+  clearTimeout(toastT); toastT = setTimeout(() => t.className = 'toast', type === 'err' ? 6000 : 2800);
 }
+function openModal(id){ $(id).classList.add('show'); }
+function closeModals(){ document.querySelectorAll('.modal.show:not(.gate)').forEach(m => m.classList.remove('show')); }
+document.addEventListener('click', e => {
+  if (e.target.closest('[data-close]') || e.target.classList.contains('modal') && !e.target.classList.contains('gate')) closeModals();
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModals(); });
 
-async function init(){
-  if (API_URL.startsWith('PASTE')){
-    $('list').innerHTML = '<div class="msg">لم يتم ضبط رابط الخدمة بعد. افتح index.html وضع الرابط في API_URL.</div>';
-    return;
-  }
-  if (!code) await askCode();
-  try{
-    const { days } = await get({ action: 'days' });
-    $('day').innerHTML = days.map(d => `<option>${d}</option>`).join('');
-    $('day').value = pickToday(days);
-    await loadDay();
-  }catch(e){
-    if (e.message.includes('كود')){ await askCode(e.message); return init(); }
-    $('list').innerHTML = `<div class="msg">تعذر التحميل: ${e.message}</div>`;
+document.querySelectorAll('.tabs [data-tab]').forEach(b => b.addEventListener('click', () => {
+  document.querySelectorAll('.tabs [data-tab]').forEach(x => x.classList.toggle('on', x === b));
+  $('tab-day').hidden = b.dataset.tab !== 'day';
+  $('tab-members').hidden = b.dataset.tab !== 'members';
+  $('savebar').hidden = b.dataset.tab !== 'day';
+  if (b.dataset.tab === 'members') loadMembersTab();
+}));
+
+/* ---------- التواريخ ---------- */
+function parseDay(name){
+  const m = /(\d{1,2})\s*-\s*(\d{1,2})\s*-\s*(\d{4})/.exec(name);
+  return m ? new Date(+m[3], +m[2]-1, +m[1]) : null;
+}
+const iso = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+
+/* ---------- الأيام ---------- */
+async function loadDays(select){
+  const { days } = await guarded(() => api({ action:'days' }));
+  days.sort((a,b) => {
+    const da = parseDay(a.name), db = parseDay(b.name);
+    return (da ? +da : 9e15) - (db ? +db : 9e15);
+  });
+  S.days = days;
+  $('day').innerHTML = days.map(d => `<option value="${esc(d.name)}">${esc(d.name)}${d.ready ? '' : '  (غير مجهز)'}</option>`).join('');
+  if (select && days.some(d => d.name === select)) $('day').value = select;
+  else {
+    const t = new Date(); t.setHours(0,0,0,0);
+    const exact = days.find(d => { const x = parseDay(d.name); return x && +x === +t; });
+    const next = days.find(d => { const x = parseDay(d.name); return x && +x >= +t; });
+    $('day').value = (exact || next || days[days.length-1] || {}).name || '';
   }
 }
 
 async function loadDay(){
-  state.day = $('day').value;
-  state.edits.clear(); updateSave();
+  S.day = $('day').value;
+  S.structChanged = false;
+  const d = S.days.find(x => x.name === S.day);
+  if (!d){ $('list').innerHTML = '<div class="msg">لا توجد أيام في الملف.</div>'; return; }
   $('list').innerHTML = '<div class="msg">جاري التحميل…</div>';
+  if (!d.ready){ S.ready = false; S.rows = []; render(); return; }
   try{
-    const { rows } = await get({ action: 'rows', sheet: state.day });
-    state.rows = rows;
+    const j = await guarded(() => api({ action:'rows', sheet:S.day }));
+    S.ready = j.ready; S.stamp = j.stamp;
+    S.rows = j.rows.map(r => ({
+      key: ++uid, row: r.row, mid: r.mid, name: r.name, job: r.job,
+      committee: r.committee, origC: r.committee, note: r.note, orig: r.note, noteEdited: false, isNew: false
+    }));
     render();
-  }catch(e){
-    $('list').innerHTML = `<div class="msg">تعذر التحميل: ${e.message}</div>`;
+  }catch(e){ $('list').innerHTML = `<div class="msg">تعذر التحميل: ${esc(e.message)}</div>`; }
+}
+
+/* ---------- العرض ---------- */
+function isDirtyRow(r){ return r.isNew || r.noteEdited || r.committee !== r.origC; }
+function structDirty(){ return S.structChanged || S.rows.some(r => r.isNew || r.committee !== r.origC); }
+function dirtyCount(){ return S.rows.filter(isDirtyRow).length; }
+
+function updateSave(){
+  const sd = structDirty();
+  const notes = S.rows.filter(r => r.noteEdited && !r.isNew && r.committee === r.origC).length;
+  $('save').disabled = S.saving || !(sd || notes);
+  $('save').textContent = S.saving ? 'جاري الحفظ…' : 'حفظ التعديلات';
+  if (!$('status').dataset.keep){
+    $('status').className = '';
+    $('status').textContent = sd ? 'تعديلات على الكشف لم تُحفظ بعد' : notes ? `${notes} ملاحظة لم تُحفظ بعد` : '';
   }
 }
 
-function esc(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
-
 function render(){
+  const tools = $('tools');
   const q = $('q').value.trim();
-  const rows = state.rows.filter(r => !q || r.name.includes(q));
-  $('count').textContent = `${rows.length} من ${state.rows.length}`;
-  if (!rows.length){ $('list').innerHTML = '<div class="empty">لا توجد أسماء مطابقة.</div>'; return; }
-  $('list').innerHTML = rows.map(r => {
-    const val = state.edits.has(r.row) ? state.edits.get(r.row) : r.note;
-    return `<div class="m ${state.edits.has(r.row)?'dirty':''}" data-row="${r.row}">
-      <div class="top">
-        <div><div class="nm">${esc(r.name)}</div><div class="jb">${esc(r.job)}</div></div>
-        ${r.committee ? `<div class="tag">${esc(r.committee)}</div>` : ''}
-      </div>
-      <textarea rows="2" placeholder="اكتب الملاحظة هنا أو اختر من الأزرار…">${esc(val)}</textarea>
-      <div class="chips">${QUICK.map(c => `<button type="button" data-q="${c}">${c}</button>`).join('')}</div>
-    </div>`;
-  }).join('');
-}
 
-function setNote(card, text){
-  const row = +card.dataset.row;
-  const orig = state.rows.find(r => r.row === row).note;
-  if (text === orig) state.edits.delete(row); else state.edits.set(row, text);
-  card.classList.toggle('dirty', state.edits.has(row));
-  card.classList.remove('done');
-  $('status').className = '';
+  if (!S.ready){
+    tools.hidden = true; $('count').textContent = '';
+    const dt = parseDay(S.day);
+    $('list').innerHTML = `<div class="empty"><h3>هذا اليوم لم يُجهَّز في الملف بعد</h3>
+      <p>اضغط تجهيز اليوم لإنشاء كشفه بنفس تنسيق باقي الأيام، ثم أضف الأعضاء.</p>
+      <button class="btn pri" id="prep" ${dt ? '' : 'disabled'}>تجهيز اليوم</button>
+      ${dt ? '' : '<p style="margin-top:10px">لم أستطع قراءة تاريخ اليوم من اسم الورقة.</p>'}</div>`;
+    updateSave(); return;
+  }
+
+  tools.hidden = false;
+  const withNotes = S.rows.filter(r => r.note).length;
+  $('count').textContent = `${S.rows.length} عضو · ${withNotes} ملاحظة`;
+
+  if (!S.rows.length){
+    $('list').innerHTML = `<div class="empty"><h3>كشف هذا اليوم فارغ</h3>
+      <p>أضف الأعضاء من القائمة، أو انسخ كشف يوم سابق ثم عدّل عليه.</p>
+      <div class="row"><button class="btn pri" id="e-add">+ إضافة أعضاء</button><button class="btn" id="e-copy">نسخ من يوم سابق</button></div></div>`;
+    updateSave(); return;
+  }
+
+  const shown = S.rows.filter(r => !q || r.name.includes(q));
+  const canMove = !q;
+  $('cmt').innerHTML = [...new Set([...COMMITTEES, ...S.rows.map(r => r.committee).filter(Boolean)])]
+    .map(v => `<option value="${esc(v)}">`).join('');
+
+  $('list').innerHTML = shown.length ? shown.map(r => `
+    <div class="m ${isDirtyRow(r) ? 'dirty' : ''}" data-key="${r.key}">
+      <div class="mh">
+        ${canMove ? `<div class="ord"><button data-act="up" aria-label="للأعلى">▲</button><button data-act="down" aria-label="للأسفل">▼</button></div>` : ''}
+        <div class="who"><div class="nm">${esc(r.name)}</div><div class="jb">${esc(r.job)}</div></div>
+        <input class="cm" type="text" list="cmt" value="${esc(r.committee)}" data-f="committee" placeholder="اللجنة" aria-label="رقم اللجنة أو الصفة">
+        <button class="x" data-act="del" aria-label="حذف من الكشف">×</button>
+      </div>
+      <textarea rows="2" data-f="note" placeholder="اكتب الملاحظة هنا أو اختر من الأزرار">${esc(r.note)}</textarea>
+      <div class="chips">${QUICK.map(c => `<button type="button" data-q="${c}">${c}</button>`).join('')}</div>
+    </div>`).join('') : '<div class="empty">لا توجد أسماء مطابقة.</div>';
   updateSave();
 }
 
+/* ---------- أحداث القائمة ---------- */
+const rowOf = el => { const c = el.closest('.m'); return c && S.rows.find(r => r.key === +c.dataset.key); };
+
 $('list').addEventListener('input', e => {
-  if (e.target.tagName === 'TEXTAREA') setNote(e.target.closest('.m'), e.target.value.trim());
+  const r = rowOf(e.target); if (!r) return;
+  const f = e.target.dataset.f;
+  if (f === 'committee') r.committee = e.target.value.trim();
+  if (f === 'note'){ r.note = e.target.value.trim(); r.noteEdited = r.note !== r.orig; }
+  e.target.closest('.m').classList.toggle('dirty', isDirtyRow(r));
+  $('status').dataset.keep = ''; updateSave();
 });
+
 $('list').addEventListener('click', e => {
-  const b = e.target.closest('button[data-q]');
-  if (!b) return;
-  const card = b.closest('.m'), ta = card.querySelector('textarea');
-  ta.value = b.dataset.q;
-  setNote(card, ta.value);
-  ta.focus();
+  if (e.target.id === 'prep') return prepDay();
+  if (e.target.id === 'e-add') return openPick();
+  if (e.target.id === 'e-copy') return openCopy();
+  const r = rowOf(e.target); if (!r) return;
+  const chip = e.target.closest('button[data-q]');
+  if (chip){
+    const ta = e.target.closest('.m').querySelector('textarea');
+    ta.value = chip.dataset.q; r.note = ta.value; r.noteEdited = r.note !== r.orig;
+    e.target.closest('.m').classList.toggle('dirty', isDirtyRow(r)); ta.focus(); updateSave(); return;
+  }
+  const act = e.target.dataset.act; if (!act) return;
+  const i = S.rows.indexOf(r);
+  if (act === 'del'){
+    if (!r.isNew && !confirm(`حذف «${r.name}» من كشف هذا اليوم؟`)) return;
+    S.rows.splice(i, 1); S.structChanged = true;
+  }
+  if (act === 'up' && i > 0){ [S.rows[i-1], S.rows[i]] = [S.rows[i], S.rows[i-1]]; S.structChanged = true; }
+  if (act === 'down' && i < S.rows.length-1){ [S.rows[i+1], S.rows[i]] = [S.rows[i], S.rows[i+1]]; S.structChanged = true; }
+  $('status').dataset.keep = ''; render();
 });
 
 $('q').addEventListener('input', render);
 $('day').addEventListener('change', () => {
-  if (state.edits.size && !confirm('يوجد تعديلات لم تُحفظ. هل تريد تجاهلها؟')){ $('day').value = state.day; return; }
+  if (S.rows.some(isDirtyRow) || S.structChanged){
+    if (!confirm('يوجد تعديلات لم تُحفظ. هل تريد تجاهلها؟')){ $('day').value = S.day; return; }
+  }
   loadDay();
 });
-$('logout').addEventListener('click', async e => {
-  e.preventDefault(); localStorage.removeItem('code'); code=''; await askCode(); init();
-});
+$('logout').addEventListener('click', async e => { e.preventDefault(); localStorage.removeItem('code'); code = ''; await askCode(); init(); });
 
+/* ---------- الحفظ ---------- */
 $('save').addEventListener('click', async () => {
-  const updates = [...state.edits].map(([row, note]) => ({ row, note, name: state.rows.find(r => r.row === row).name }));
-  $('save').disabled = true; setStatus('جاري الحفظ…');
+  S.saving = true; $('status').dataset.keep = '1'; $('status').className = ''; $('status').textContent = 'جاري الحفظ…'; updateSave();
   try{
-    const res = await post({ sheet: state.day, updates });
-    updates.forEach(u => { state.rows.find(r => r.row === u.row).note = u.note; });
-    const skipped = res.skipped || [];
-    state.edits.clear();
-    document.querySelectorAll('.m.dirty').forEach(c => { c.classList.remove('dirty'); c.classList.add('done'); });
-    updateSave();
-    if (skipped.length){ setStatus(`تم حفظ ${res.saved}، وتخطي ${skipped.length} لأن الشيت تغيّر. حدّث الصفحة.`, 'err'); }
-    else setStatus(`تم حفظ ${res.saved} ملاحظة`, 'ok');
+    if (structDirty()){
+      const items = S.rows.map(r => ({
+        row: r.row || undefined, mid: r.mid || undefined, name: r.name, committee: r.committee,
+        note: (r.noteEdited || r.isNew) ? r.note : undefined
+      }));
+      await guarded(() => api(null, { action:'saveRoster', sheet:S.day, stamp:S.stamp, items }));
+      toast('تم حفظ الكشف', 'ok');
+    } else {
+      const updates = S.rows.filter(r => r.noteEdited).map(r => ({ row:r.row, name:r.name, note:r.note }));
+      const res = await guarded(() => api(null, { action:'saveNotes', sheet:S.day, updates }));
+      if (res.skipped && res.skipped.length) toast(`تم حفظ ${res.saved}، وتخطي ${res.skipped.length} لأن الشيت تغيّر. حدّث الصفحة.`, 'err');
+      else toast(`تم حفظ ${res.saved} ملاحظة`, 'ok');
+    }
+    S.saving = false; $('status').dataset.keep = '';
+    await loadDay();
   }catch(e){
-    setStatus(e.message, 'err'); $('save').disabled = false;
+    S.saving = false; $('status').dataset.keep = '1';
+    $('status').className = 'err'; $('status').textContent = e.message;
+    updateSave();
   }
 });
+window.addEventListener('beforeunload', e => { if (S.rows.some(isDirtyRow) || S.structChanged){ e.preventDefault(); e.returnValue = ''; } });
 
-window.addEventListener('beforeunload', e => { if (state.edits.size){ e.preventDefault(); e.returnValue=''; } });
+/* ---------- يوم جديد / تجهيز يوم ---------- */
+async function createDay(dateIso){
+  const res = await guarded(() => api(null, { action:'addDay', date:dateIso }));
+  await loadDays(res.name); await loadDay();
+  toast(res.created ? 'تم إنشاء اليوم' : 'اليوم موجود بالفعل', 'ok');
+}
+async function prepDay(){
+  const dt = parseDay(S.day); if (!dt) return;
+  $('prep').disabled = true; $('prep').textContent = 'جاري التجهيز…';
+  try{ await createDay(iso(dt)); }catch(e){ toast(e.message, 'err'); render(); }
+}
+$('newDay').addEventListener('click', () => {
+  const dates = S.days.map(d => parseDay(d.name)).filter(Boolean).sort((a,b) => a - b);
+  const base = dates.length ? new Date(dates[dates.length-1]) : new Date();
+  if (dates.length) base.setDate(base.getDate() + 1);
+  $('nd').value = iso(base); openModal('mDay');
+});
+$('dayGo').addEventListener('click', async () => {
+  if (!$('nd').value) return;
+  $('dayGo').disabled = true;
+  try{ closeModals(); await createDay($('nd').value); }catch(e){ toast(e.message, 'err'); }
+  $('dayGo').disabled = false;
+});
 
+/* ---------- قائمة الأعضاء + الإضافة للكشف ---------- */
+async function ensureMaster(force){
+  if (S.master && !force) return;
+  const j = await guarded(() => api({ action:'master' }));
+  S.master = j.members;
+  $('jobs').innerHTML = [...new Set(S.master.map(m => m.job).filter(Boolean))].map(v => `<option value="${esc(v)}">`).join('');
+}
+const inDay = m => S.rows.some(r => (r.mid && r.mid === m.id) || r.name === m.name);
+
+async function openPick(){
+  try{ await ensureMaster(); }catch(e){ return toast(e.message, 'err'); }
+  S.pick = new Set(); $('pq').value = ''; $('pickCm').value = '';
+  renderPick(); openModal('mPick'); $('pq').focus();
+}
+function renderPick(){
+  const q = $('pq').value.trim();
+  const list = S.master.filter(m => !q || m.name.includes(q));
+  $('plist').innerHTML = list.length ? list.map(m => {
+    const off = inDay(m);
+    return `<label class="pi ${off ? 'off' : ''}"><input type="checkbox" data-id="${m.id}" ${off ? 'disabled' : ''} ${S.pick.has(m.id) ? 'checked' : ''}>
+      <span>${esc(m.name)}<small>${esc(m.job)}</small></span>${off ? '<em>في الكشف</em>' : ''}</label>`;
+  }).join('') : '<div class="msg">لا توجد نتائج.</div>';
+  $('pickGo').disabled = S.pick.size === 0;
+  $('pickGo').textContent = S.pick.size ? `إضافة (${S.pick.size})` : 'إضافة';
+}
+$('pq').addEventListener('input', renderPick);
+$('plist').addEventListener('change', e => {
+  const id = +e.target.dataset.id; if (!id) return;
+  e.target.checked ? S.pick.add(id) : S.pick.delete(id);
+  $('pickGo').disabled = S.pick.size === 0;
+  $('pickGo').textContent = S.pick.size ? `إضافة (${S.pick.size})` : 'إضافة';
+});
+$('pickGo').addEventListener('click', () => {
+  const cm = $('pickCm').value.trim();
+  S.master.filter(m => S.pick.has(m.id)).forEach(m => {
+    S.rows.push({ key:++uid, row:null, mid:m.id, name:m.name, job:m.job, committee:cm, origC:'', note:'', orig:'', noteEdited:false, isNew:true });
+  });
+  S.structChanged = true; closeModals(); $('status').dataset.keep = ''; render();
+});
+$('addMem').addEventListener('click', openPick);
+$('toNew').addEventListener('click', () => { closeModals(); document.querySelector('[data-tab="members"]').click(); $('fName').focus(); });
+
+/* ---------- نسخ من يوم ---------- */
+function openCopy(){
+  const opts = S.days.filter(d => d.ready && d.name !== S.day);
+  if (!opts.length) return toast('لا توجد أيام أخرى مجهزة للنسخ منها', 'err');
+  $('copySrc').innerHTML = opts.map(d => `<option value="${esc(d.name)}">${esc(d.name)}</option>`).join('');
+  openModal('mCopy');
+}
+$('copyDay').addEventListener('click', openCopy);
+$('copyGo').addEventListener('click', async () => {
+  $('copyGo').disabled = true;
+  try{
+    const j = await guarded(() => api({ action:'rows', sheet:$('copySrc').value }));
+    let added = 0, skipped = 0;
+    j.rows.forEach(r => {
+      if (!r.mid){ skipped++; return; }
+      if (S.rows.some(x => x.mid === r.mid || x.name === r.name)) return;
+      S.rows.push({ key:++uid, row:null, mid:r.mid, name:r.name, job:r.job, committee:r.committee, origC:'', note:'', orig:'', noteEdited:false, isNew:true });
+      added++;
+    });
+    if (added) S.structChanged = true;
+    closeModals(); $('status').dataset.keep = ''; render();
+    toast(`تمت إضافة ${added} عضو` + (skipped ? `، وتخطي ${skipped} غير موجودين في قائمة الأعضاء` : ''), added ? 'ok' : 'err');
+  }catch(e){ toast(e.message, 'err'); }
+  $('copyGo').disabled = false;
+});
+
+/* ---------- تبويب الأعضاء ---------- */
+async function loadMembersTab(){
+  try{ await ensureMaster(true); renderMembers(); }
+  catch(e){ $('mList').innerHTML = `<div class="msg">${esc(e.message)}</div>`; }
+}
+function renderMembers(){
+  const q = $('mq').value.trim();
+  const list = S.master.filter(m => !q || m.name.includes(q));
+  $('mCount').textContent = `(${S.master.length})`;
+  $('mList').innerHTML = list.length
+    ? list.map(m => `<div class="mrow"><span>${esc(m.name)}</span><span class="jb">${esc(m.job)}</span></div>`).join('')
+    : '<div class="msg">لا توجد نتائج.</div>';
+}
+$('mq').addEventListener('input', () => S.master && renderMembers());
+$('fNid').addEventListener('input', () => {
+  const v = $('fNid').value.replace(/[^\d٠-٩]/g, '');
+  $('fNid').value = v;
+  const h = $('nidHint'); h.textContent = `${v.length} / 14`;
+  h.className = v.length === 14 || v.length === 0 ? '' : 'bad';
+});
+$('addMember').addEventListener('click', async () => {
+  const body = { action:'addMember', name:$('fName').value, nid:$('fNid').value, record:$('fRec').value, job:$('fJob').value };
+  $('addMember').disabled = true;
+  try{
+    const res = await guarded(() => api(null, body));
+    S.master.push(res.member);
+    ['fName','fNid','fRec','fJob'].forEach(i => $(i).value = ''); $('nidHint').textContent = '0 / 14';
+    renderMembers(); toast('تمت إضافة العضو إلى القائمة', 'ok');
+  }catch(e){ toast(e.message, 'err'); }
+  $('addMember').disabled = false;
+});
+
+/* ---------- البداية ---------- */
+async function init(){
+  if (API_URL.startsWith('PASTE')){
+    $('list').innerHTML = '<div class="msg">لم يتم ضبط رابط الخدمة بعد. افتح index.html وضع الرابط في API_URL.</div>'; return;
+  }
+  if (!code) await askCode();
+  try{ await loadDays(); await loadDay(); }
+  catch(e){ $('list').innerHTML = `<div class="msg">تعذر التحميل: ${esc(e.message)}</div>`; }
+}
 init();
 </script>
 </body>
