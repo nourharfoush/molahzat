@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>تكرار الأعضاء في الامتحانات</title>
+<title>عدد ملاحظات كل عضو</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -28,6 +28,10 @@ select{flex:1;min-width:130px}
 input:focus,select:focus{outline:2px solid var(--green);outline-offset:1px;border-color:var(--green)}
 .btn{font:inherit;font-weight:600;border:1px solid var(--green);background:#fff;color:var(--green);border-radius:10px;padding:10px 14px;cursor:pointer}
 .btn:hover{background:var(--green);color:#fff}
+.chk{display:block;margin-top:10px;font-size:.88rem;color:var(--muted)}
+.note{display:flex;gap:8px;width:100%}
+.note em{flex:none}
+.note span{color:var(--ink)}
 .list{display:flex;flex-direction:column;gap:8px;margin-top:14px}
 .m{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 14px;cursor:pointer}
 .top{display:flex;align-items:center;gap:12px}
@@ -40,8 +44,8 @@ input:focus,select:focus{outline:2px solid var(--green);outline-offset:1px;borde
 .cnt b{display:block;font-size:1.25rem;color:var(--green);line-height:1.1}
 .cnt span{font-size:.72rem;color:var(--muted)}
 .days{display:none;margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);font-size:.85rem}
-.m.open .days{display:flex;flex-wrap:wrap;gap:6px}
-.days em{font-style:normal;background:#e5f0eb;color:var(--green);border-radius:8px;padding:2px 10px}
+.m.open .days{display:flex;flex-direction:column;gap:6px}
+.days em{font-style:normal;background:#e5f0eb;color:var(--green);border-radius:8px;padding:2px 10px;font-size:.8rem}
 .msg{text-align:center;color:var(--muted);padding:40px 10px}
 .gate{position:fixed;inset:0;background:rgba(22,48,42,.55);display:none;align-items:center;justify-content:center;z-index:20;padding:20px}
 .gate.show{display:flex}
@@ -56,7 +60,7 @@ input:focus,select:focus{outline:2px solid var(--green);outline-offset:1px;borde
 
 <header>
   <div class="wrap">
-    <h1>تكرار الأعضاء في أيام الامتحانات</h1>
+    <h1>عدد ملاحظات كل عضو</h1>
     <p>رواق العلوم الشرعية والعربية · البحيرة · <a href="index.html">العودة لإدخال الملاحظات</a></p>
   </div>
 </header>
@@ -64,19 +68,21 @@ input:focus,select:focus{outline:2px solid var(--green);outline-offset:1px;borde
 <main class="wrap">
   <div class="sum">
     <div><b id="sMembers">–</b><span>عدد الأعضاء</span></div>
-    <div><b id="sDays">–</b><span>عدد الأيام</span></div>
-    <div><b id="sMax">–</b><span>أكثر تكرار</span></div>
+    <div><b id="sNotes">–</b><span>إجمالي الملاحظات</span></div>
+    <div><b id="sMax">–</b><span>أكثر عدد ملاحظات لعضو</span></div>
   </div>
 
   <div class="tools">
     <input type="search" id="q" placeholder="ابحث بالاسم" aria-label="بحث">
     <select id="sort" aria-label="الترتيب">
-      <option value="desc">الأكثر تكرارًا</option>
-      <option value="asc">الأقل تكرارًا</option>
+      <option value="desc">الأكثر ملاحظات</option>
+      <option value="asc">الأقل ملاحظات</option>
       <option value="name">أبجديًا</option>
     </select>
     <button class="btn" id="csv">تصدير Excel</button>
   </div>
+
+  <label class="chk"><input type="checkbox" id="skipPresent"> لا تحسب كلمة «حضر» كملاحظة</label>
 
   <div id="list" class="list"><div class="msg">جاري التحميل…</div></div>
 </main>
@@ -92,7 +98,7 @@ input:focus,select:focus{outline:2px solid var(--green);outline-offset:1px;borde
 
 <script>
 /* نفس الرابط المستخدم في index.html */
-const API_URL = 'https://script.google.com/macros/s/AKfycbw3inEzm8yvGMDHXHX55up12Eljg6fOe9WarVo00jnScuzdIG_pZqqlKHm_rXV9AsFi1A/exec';
+const API_URL = 'https://script.google.com/macros/s/AKfycbxylJZGN5h5NWJOY9b7ejKsP6IkXYj0NtHUQNPEqNAKYPVThB26puwlQI3rYctpzogsDw/exec';
 
 const $ = id => document.getElementById(id);
 let code = localStorage.getItem('code') || '';
@@ -123,9 +129,6 @@ async function load(){
     const j = await (await fetch(u)).json();
     if (!j.ok) throw new Error(j.error);
     data = j.stats;
-    $('sMembers').textContent = data.members.length;
-    $('sDays').textContent = data.totalDays;
-    $('sMax').textContent = data.members.length ? Math.max(...data.members.map(m => m.count)) : 0;
     render();
   }catch(e){
     if (e.message.includes('كود')){ await askCode(e.message); return load(); }
@@ -133,46 +136,60 @@ async function load(){
   }
 }
 
+function notesOf(m){
+  return $('skipPresent').checked ? m.notes.filter(n => n.note.trim() !== 'حضر') : m.notes;
+}
+
 function view(){
   const q = $('q').value.trim();
-  let rows = data.members.filter(m => !q || m.name.includes(q));
+  let rows = data.members.filter(m => !q || m.name.includes(q))
+    .map(m => ({ ...m, ns: notesOf(m) }));
   const s = $('sort').value;
-  rows = [...rows].sort((a,b) =>
-    s === 'name' ? a.name.localeCompare(b.name,'ar') :
-    s === 'asc'  ? a.count - b.count || a.name.localeCompare(b.name,'ar') :
-                   b.count - a.count || a.name.localeCompare(b.name,'ar'));
+  const byName = (a,b) => a.name.localeCompare(b.name,'ar');
+  rows.sort((a,b) =>
+    s === 'name' ? byName(a,b) :
+    s === 'asc'  ? a.ns.length - b.ns.length || byName(a,b) :
+                   b.ns.length - a.ns.length || byName(a,b));
   return rows;
 }
 
 function render(){
+  const all = data.members.map(m => notesOf(m).length);
+  $('sMembers').textContent = data.members.length;
+  $('sNotes').textContent = all.reduce((a,b) => a + b, 0);
+  $('sMax').textContent = all.length ? Math.max(...all) : 0;
+
   const rows = view();
   if (!rows.length){ $('list').innerHTML = '<div class="msg">لا توجد أسماء مطابقة.</div>'; return; }
-  const total = data.totalDays || 1;
+  const max = Math.max(1, ...rows.map(m => m.ns.length));
   $('list').innerHTML = rows.map(m => `
     <div class="m">
       <div class="top">
         <div class="info">
           <div class="nm">${esc(m.name)}</div>
-          <div class="jb">${esc(m.job)}</div>
-          <div class="bar"><i style="width:${Math.round(m.count/total*100)}%"></i></div>
+          <div class="jb">${esc(m.job)} · ظهر في ${m.count} يوم</div>
+          <div class="bar"><i style="width:${Math.round(m.ns.length/max*100)}%"></i></div>
         </div>
-        <div class="cnt"><b>${m.count}</b><span>من ${data.totalDays} يوم</span></div>
+        <div class="cnt"><b>${m.ns.length}</b><span>ملاحظة</span></div>
       </div>
-      <div class="days">${m.days.map(d => `<em>${esc(d)}</em>`).join('')}</div>
+      <div class="days">${m.ns.length
+        ? m.ns.map(n => `<div class="note"><em>${esc(n.day)}</em><span>${esc(n.note)}</span></div>`).join('')
+        : '<span style="color:var(--muted)">لا توجد ملاحظات مسجلة.</span>'}</div>
     </div>`).join('');
 }
 
 $('list').addEventListener('click', e => { const c = e.target.closest('.m'); if (c) c.classList.toggle('open'); });
 $('q').addEventListener('input', render);
 $('sort').addEventListener('change', render);
+$('skipPresent').addEventListener('change', render);
 
 $('csv').addEventListener('click', () => {
   const q = s => `"${String(s).replace(/"/g,'""')}"`;
-  const lines = [['الاسم','جهة العمل','عدد التكرار','الأيام'].map(q).join(',')]
-    .concat(view().map(m => [m.name, m.job, m.count, m.days.join(' | ')].map(q).join(',')));
+  const lines = [['الاسم','جهة العمل','عدد الملاحظات','عدد أيام الظهور','الملاحظات'].map(q).join(',')]
+    .concat(view().map(m => [m.name, m.job, m.ns.length, m.count, m.ns.map(n => n.day + ': ' + n.note).join(' | ')].map(q).join(',')));
   const blob = new Blob(['\ufeff' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8' });
   const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob); a.download = 'تكرار-الأعضاء.csv'; a.click();
+  a.href = URL.createObjectURL(blob); a.download = 'ملاحظات-الأعضاء.csv'; a.click();
   URL.revokeObjectURL(a.href);
 });
 
