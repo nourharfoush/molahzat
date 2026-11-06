@@ -37,7 +37,7 @@ select:focus,input:focus,textarea:focus{outline:2px solid var(--green);outline-o
 .nm{font-weight:600;font-size:1rem}
 .jb{font-size:.82rem;color:var(--muted)}
 .tag{flex:none;font-size:.78rem;font-weight:600;color:var(--green);background:#e5f0eb;border-radius:8px;padding:2px 10px;white-space:nowrap}
-textarea{margin-top:10px;min-height:44px;resize:vertical;font-size:.95rem}
+textarea{margin-top:10px;min-height:64px;resize:vertical;font-size:.95rem}
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
 .chips button{font:inherit;font-size:.8rem;border:1px solid var(--line);background:#fff;color:var(--ink);
   border-radius:999px;padding:3px 12px;cursor:pointer}
@@ -68,6 +68,7 @@ textarea{margin-top:10px;min-height:44px;resize:vertical;font-size:.95rem}
   <div class="wrap">
     <h1>ملاحظات امتحانات رواق العلوم الشرعية والعربية</h1>
     <p>الأزهر الشريف · فرع رواق البحيرة · نوفمبر 2026</p>
+    <p><a href="stats.html" style="color:#e9d9a8">عدد ملاحظات كل عضو</a></p>
   </div>
 </header>
 
@@ -101,7 +102,7 @@ textarea{margin-top:10px;min-height:44px;resize:vertical;font-size:.95rem}
 
 <script>
 /* ===== الإعداد: ضع رابط Web App من Apps Script هنا ===== */
-const API_URL = 'https://script.google.com/macros/s/AKfycbw3inEzm8yvGMDHXHX55up12Eljg6fOe9WarVo00jnScuzdIG_pZqqlKHm_rXV9AsFi1A/exec';
+const API_URL = 'PASTE_YOUR_WEB_APP_URL_HERE';
 /* ======================================================= */
 
 const QUICK = ['حضر', 'غائب', 'متأخر', 'انصراف مبكر'];
@@ -207,7 +208,7 @@ function render(){
         <div><div class="nm">${esc(r.name)}</div><div class="jb">${esc(r.job)}</div></div>
         ${r.committee ? `<div class="tag">${esc(r.committee)}</div>` : ''}
       </div>
-      <textarea rows="1" placeholder="اكتب الملاحظة…">${esc(val)}</textarea>
+      <textarea rows="2" placeholder="اكتب الملاحظة هنا أو اختر من الأزرار…">${esc(val)}</textarea>
       <div class="chips">${QUICK.map(c => `<button type="button" data-q="${c}">${c}</button>`).join('')}</div>
     </div>`;
   }).join('');
